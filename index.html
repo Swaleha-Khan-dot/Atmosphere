@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Atmosphere</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Raleway"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <style>
+      body,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Raleway", sans-serif;
+      }
+
+      body,
+      html {
+        height: 100%;
+        line-height: 1.8;
+        scroll-behavior: smooth;
+      }
+
+      /* Full height image header */
+      .bgimg-1 {
+        background-position: center;
+        background-size: cover;
+        background-image: url("cloud.jpg");
+        min-height: 100%;
+      }
+
+      .w3-bar .w3-button {
+        padding: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar (sit on top) -->
+    <div class="w3-top">
+      <div class="w3-bar w3-white w3-card" id="myNavbar">
+        <a href="#home" class="w3-bar-item w3-button w3-wide">Atmosphere</a>
+        <!-- Right-sided navbar links -->
+        <div class="w3-right w3-hide-small">
+          <a href="#weatherdashboard" class="w3-bar-item w3-button"
+            >Live Weather Dashboard
+          </a>
+          <a href="#temperatureconverter" class="w3-bar-item w3-button"
+            ><i class="fa fa-user"></i> Temperature Converter</a
+          >
+          <a href="#about" class="w3-bar-item w3-button"
+            ><i class="fa fa-th"></i> About</a
+          >
+        </div>
+        <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+        <a
+          href="javascript:void(0)"
+          class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium"
+          onclick="w3_open()"
+        >
+          <i class="fa fa-bars"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Sidebar on small screens when clicking the menu icon -->
+    <nav
+      class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large"
+      style="display: none"
+      id="mySidebar"
+    >
+      <a
+        href="javascript:void(0)"
+        onclick="w3_close()"
+        class="w3-bar-item w3-button w3-large w3-padding-16"
+        >Close ×</a
+      >
+      <a
+        href="#weatherdashboard"
+        onclick="w3_close()"
+        class="w3-bar-item w3-button"
+        >LIVE WEATHER DASHBOARD
+      </a>
+      <a
+        href="#temperatureconverter"
+        onclick="w3_close()"
+        class="w3-bar-item w3-button"
+        >TEMPERATURE CONVERTER</a
+      >
+      <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button"
+        >ABOUT</a
+      >
+    </nav>
+
+    <!-- Header with full-height image -->
+    <header class="bgimg-1 w3-display-container w3-grayscale-min" id="home">
+      <div class="w3-display-left w3-text-dark-gray" style="padding: 48px">
+        <span class="w3-jumbo w3-hide-small"
+          >Live Weather Dashboard & Temperature Converter Online</span
+        ><br />
+        <span class="w3-xxlarge w3-hide-large w3-hide-medium"
+          >Live Weather Dashboard & Temperature Converter Online</span
+        ><br />
+        <span class="w3-large"
+          >Get real-time weather updates and convert temperatures instantly.
+          Simple, fast, and easy to use — all in one place.
+        </span>
+      </div>
+    </header>
+
+    <!-- Weather Dashboard Section -->
+    <div class="w3-container" style="padding: 128px 16px" id="weatherdashboard">
+      <h3 class="w3-center">Live Weather Dashboard</h3>
+      <p class="w3-center w3-large">Check live weather by city</p>
+
+      <!-- Search Input -->
+      <div class="w3-center" style="margin: 20px 0">
+        <input
+          type="text"
+          id="cityInput"
+          class="w3-input w3-border"
+          style="max-width: 300px; margin: auto"
+          placeholder="Enter city name"
+        />
+        <button id="getWeatherBtn" class="w3-button w3-blue w3-margin-top">
+          Get Weather
+        </button>
+      </div>
+
+      <!-- Weather Info Display -->
+      <div
+        class="w3-row-padding w3-center"
+        style="margin-top: 64px"
+        id="weatherInfo"
+      >
+        <!-- Weather data will appear here -->
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("getWeatherBtn")
+        .addEventListener("click", function () {
+          const city = document.getElementById("cityInput").value.trim();
+          const apiKey = "ce28bb5c98f73cf27841979e6a7e24a6";
+
+          if (!city) {
+            alert("Please enter a city name.");
+            return;
+          }
+
+          // Fetch weather from OpenWeatherMap
+          fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+              city
+            )}&appid=${apiKey}&units=metric`
+          )
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("City not found");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              // Format weather info in a centered card
+              const html = `
+            <div class="w3-card w3-white w3-padding w3-center" style="max-width: 500px; margin: auto;">
+              <h4>${data.name}, ${data.sys.country}</h4>
+              <p><strong>${data.weather[0].main}</strong> - ${data.weather[0].description}</p>
+              <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="weather icon" />
+              <p>Temperature: ${data.main.temp}°C</p>
+              <p>Humidity: ${data.main.humidity}%</p>
+              <p>Wind: ${data.wind.speed} m/s</p>
+            </div>
+          `;
+              document.getElementById("weatherInfo").innerHTML = html;
+            })
+            .catch((error) => {
+              document.getElementById("weatherInfo").innerHTML = `
+            <div class="w3-text-red">${error.message}</div>
+          `;
+            });
+        });
+    </script>
+
+    <!-- Temperature Conversion Dashboard Section -->
+    <div
+      class="w3-container w3-light-grey"
+      style="padding: 128px 16px"
+      id="temperatureconverter"
+    >
+      <h3 class="w3-center">Convert Temperature</h3>
+
+      <div
+        class="w3-row-padding w3-center"
+        style="max-width: 600px; margin: auto"
+      >
+        <div class="w3-third w3-margin-bottom">
+          <label>From:</label>
+          <select id="fromUnit" class="w3-select">
+            <option value="C">Celsius</option>
+            <option value="F">Fahrenheit</option>
+            <option value="K">Kelvin</option>
+          </select>
+        </div>
+        <div class="w3-third w3-margin-bottom">
+          <label>Temperature:</label>
+          <input
+            id="tempInput"
+            class="w3-input"
+            type="number"
+            placeholder="Enter value"
+          />
+        </div>
+        <div class="w3-third w3-margin-bottom">
+          <label>To:</label>
+          <select id="toUnit" class="w3-select">
+            <option value="C">Celsius</option>
+            <option value="F">Fahrenheit</option>
+            <option value="K">Kelvin</option>
+          </select>
+        </div>
+        <div class="w3-container" style="margin-top: 20px">
+          <button onclick="convertTemperature()" class="w3-button w3-blue">
+            Convert
+          </button>
+          <p id="result" class="w3-large w3-margin-top"></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function convertTemperature() {
+        const from = document.getElementById("fromUnit").value;
+        const to = document.getElementById("toUnit").value;
+        const temp = parseFloat(document.getElementById("tempInput").value);
+        let result = "";
+
+        if (isNaN(temp)) {
+          result = "Please enter a valid number.";
+        } else if (from === to) {
+          result = `${temp.toFixed(2)} °${to}`;
+        } else {
+          let converted;
+          if (from === "C") {
+            converted = to === "F" ? (temp * 9) / 5 + 32 : temp + 273.15;
+          } else if (from === "F") {
+            converted =
+              to === "C"
+                ? ((temp - 32) * 5) / 9
+                : ((temp - 32) * 5) / 9 + 273.15;
+          } else if (from === "K") {
+            converted =
+              to === "C" ? temp - 273.15 : ((temp - 273.15) * 9) / 5 + 32;
+          }
+          result = `${converted.toFixed(2)} °${to}`;
+        }
+
+        document.getElementById("result").textContent = result;
+      }
+    </script>
+
+    <!-- Atmosphere Section -->
+    <div class="w3-container" style="padding: 128px 16px" id="about">
+      <h3 class="w3-center">Atmosphere?</h3>
+      <p class="w3-center w3-large">What we've done for people</p>
+      <p
+        class="w3-center w3-medium w3-text-black"
+        style="max-width: 600px; margin: auto; margin-top: 16px"
+      >
+        <em
+          ><b>"Atmosphere"</b> reflects the environment we create through
+          technology — intuitive, breathable, and designed for human connection.
+          It's not just what we build, but how it feels to use it.</em
+        >
+      </p>
+    </div>
+
+    <!-- About Section -->
+    <div class="w3-container w3-light-grey" style="padding: 128px 16px">
+      <h3 class="w3-center">About Me!</h3>
+      <p
+        class="w3-center w3-large"
+        style="max-width: 600px; margin: auto; margin-top: 16px"
+      >
+        I create simple solutions for complex problems. Focused on clarity,
+        driven by curiosity. Less noise, more meaning.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w3-center w3-black w3-padding-64">
+      <a href="#home" class="w3-button w3-light-grey"
+        ><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a
+      >
+      <div class="w3-xlarge w3-section">
+        <i class="fa fa-github w3-hover-opacity"></i>
+        <i class="fa fa-linkedin w3-hover-opacity"></i>
+      </div>
+      <p>
+        Made With ❤️!
+        <a
+          href="#"
+          title="By Swaleha Khan"
+          target="_blank"
+          class="w3-hover-text-green"
+        >
+          By Swaleha Khan</a
+        >
+      </p>
+    </footer>
+
+    <script>
+      // Toggle between showing and hiding the sidebar when clicking the menu icon
+      var mySidebar = document.getElementById("mySidebar");
+
+      function w3_open() {
+        if (mySidebar.style.display === "block") {
+          mySidebar.style.display = "none";
+        } else {
+          mySidebar.style.display = "block";
+        }
+      }
+
+      // Close the sidebar with the close button
+      function w3_close() {
+        mySidebar.style.display = "none";
+      }
+    </script>
+  </body>
+</html>
